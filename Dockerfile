@@ -1,19 +1,23 @@
-# Step 1: Build the app
-FROM node:18-alpine AS builder
+# Use an official Node.js runtime as a parent image
+FROM node:18-alpine
+
+# Set the working directory
 WORKDIR /app
 
+# Copy package.json and package-lock.json
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
+# Copy the rest of the application code
 COPY . .
-RUN npm run build
 
-# Step 2: Serve with NGINX
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Build the app (optional, if using build tools like React/Vue)
+# RUN npm run build
 
-# Optional: Replace default NGINX config if needed
-# COPY nginx.conf /etc/nginx/nginx.conf
+# Expose the port your app runs on
+EXPOSE 3000
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Start the app
+CMD ["npm", "start"]
